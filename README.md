@@ -1,5 +1,5 @@
 **INTRODUCTION**
-This repository has some codes for stiching multiple images to form a panoramic view of the scenes. To use this repo, capture some images from the mobile and store the images in folder /sample_images/set{number} with the image extension .jpg only. The sequence of image is very important and it should start with 1.jpg, 2.jpg ans so on. The final panoramic view 'final_img.jpg' will be saved in the folder /sample_images/set{number}. 
+This repository has some codes for stiching multiple images to form a panoramic view of the scenes. To use this repo, capture some images from the mobile and store the images in folder /sample_images/set{number} with the image extension .jpg only. The sequence of image is very important and it should start with 1.jpg, 2.jpg and so on. The final panoramic view 'final_img.jpg' will be saved in the folder /sample_images/set{number}. 
 
 
 
@@ -11,7 +11,7 @@ cd /path/to/the/repository
 python main.py -s 3 -r 1
 
 
-4. To reduce the size of the image set -r to higher values. 
+4. To reduce the size of the image, set -r to higher values. 
 For example  python main.py -s 3 -r 2 means taking images from foder '/sample_images/set3' and each image is resized to (h/2, w/2).
 
 
