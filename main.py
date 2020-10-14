@@ -2,16 +2,23 @@ import cv2
 import numpy as np
 from extra_functions import get_panaroma_image, resize_images
 import os
+import argparse
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-s', '--set_num', help='Set number for the source images', type=int, default=1)
+parser.add_argument('-r', '--image_scale', help='Scale down the image size', type=int, default=1)
+args = parser.parse_args()
 
 
 
-set_num = 2
+set_num = args.set_num
 
 base_dir = './sample_images/set' + str(set_num) + '/'
 images_list = os.listdir(base_dir)
 
 
-# resize_images(base_dir, scale=8)
+resize_images(base_dir, scale=args.image_scale)
 
 
 
