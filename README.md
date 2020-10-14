@@ -19,6 +19,6 @@ For example  python main.py -s 3 -r 2 means taking images from foder '/sample_im
 
 
 **TO DO**
-1. Execution should increase linearly with the number of the images.
+1. Execution time should increase linearly with the number of the images.
 
 

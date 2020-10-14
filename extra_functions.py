@@ -32,7 +32,6 @@ def get_panaroma_image(base_img, target_img):
 	bf = cv2.BFMatcher()
 	matches = bf.knnMatch(des1,des2, k=2)
 
-
 	good = []
 	for m in matches:
 		if m[0].distance < 0.75*m[1].distance:
@@ -108,7 +107,6 @@ def get_panaroma_image(base_img, target_img):
 		if (cv2.arcLength(lcl_cntr,True) > max_cntr_length):
 			max_cntr_length = len(lcl_cntr)
 			max_index = i
-
 
 
 	x,y,w,h = cv2.boundingRect(contours[max_index])
