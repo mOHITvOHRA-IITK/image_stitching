@@ -43,7 +43,7 @@ _, _, final_img, crop_ROI = get_panaroma_image(img1, img2, None)
 for i in range(3, 1+len(images_list)):
 
 	img2 = cv2.imread(base_dir + str(i) + '.jpg')
-	_, _, final_img, crop_ROI = get_panaroma_image(final_img, img2, crop_ROI)
+	_, _, final_img, crop_ROI = get_panaroma_image(final_img, img2, None)
 
 
 
