@@ -5,11 +5,11 @@ import os
 
 
 
-def get_panaroma_image(base_img, target_img):
+def get_panaroma_image(base_img, target_img, crop_ROI):
 
 
 	h1,w1 = base_img.shape[0:2]
-	h2,w2 = base_img.shape[0:2]
+	h2,w2 = target_img.shape[0:2]
 
 	h = h1
 	if h2 > h1:
@@ -20,14 +20,13 @@ def get_panaroma_image(base_img, target_img):
 		w = w2
 
 
-	img1 = cv2.cvtColor(target_img, cv2.COLOR_BGR2GRAY)
-	img2 = cv2.cvtColor(base_img, cv2.COLOR_BGR2GRAY)
+	img1 = cv2.cvtColor(base_img, cv2.COLOR_BGR2GRAY)
+	img2 = cv2.cvtColor(target_img, cv2.COLOR_BGR2GRAY)
 
 
 	sift = cv2.xfeatures2d.SIFT_create()
-	kp1, des1 = sift.detectAndCompute(img1,None)
+	kp1, des1 = sift.detectAndCompute(img1,crop_ROI)
 	kp2, des2 = sift.detectAndCompute(img2,None)
-
 
 	bf = cv2.BFMatcher()
 	matches = bf.knnMatch(des1,des2, k=2)
@@ -40,6 +39,10 @@ def get_panaroma_image(base_img, target_img):
 	matches = np.asarray(good)
 
 
+	# print ('kp1.shape', np.asarray(kp1).shape, 'kp2.shape', np.asarray(kp2).shape, 'matches.shape', matches.shape)
+	
+
+
 	query_pixels = []
 	train_pixels = []
 
@@ -47,14 +50,15 @@ def get_panaroma_image(base_img, target_img):
 
 	for m in matches:
 		
-		local_query_index = m[0].queryIdx
-		local_train_index = m[0].trainIdx
+		local_train_index = m[0].queryIdx
+		local_query_index = m[0].trainIdx
 
-		query_pixels.append( [ (np.float32(kp1[local_query_index].pt[0]), np.float32(kp1[local_query_index].pt[1])) ] )
-		train_pixels.append( [ (np.float32(kp2[local_train_index].pt[0]), np.float32(kp2[local_train_index].pt[1])) ] )
+		
+		train_pixels.append( [ (np.float32(kp1[local_train_index].pt[0]), np.float32(kp1[local_train_index].pt[1])) ] )
+		query_pixels.append( [ (np.float32(kp2[local_query_index].pt[0]), np.float32(kp2[local_query_index].pt[1])) ] )
 
-		x = 3*w/4 + 0.5*kp1[local_query_index].pt[0] + 0.5*kp2[local_train_index].pt[0]
-		y = 3*h/4 + 0.5*kp1[local_query_index].pt[1] + 0.5*kp2[local_train_index].pt[1]
+		x = 3*w/4 + 0.5*kp1[local_train_index].pt[0] + 0.5*kp2[local_query_index].pt[0]
+		y = 3*h/4 + 0.5*kp1[local_train_index].pt[1] + 0.5*kp2[local_query_index].pt[1]
 
 		target_pixels.append( [(x, y)] )
 
@@ -67,6 +71,7 @@ def get_panaroma_image(base_img, target_img):
 
 
 	final_img = 0*warpped_target_img
+	ROI_img = np.zeros(shape = final_img.shape[0:2], dtype=np.uint8)
 
 	for i in range(3*h):
 		for j in range(3*w):
@@ -83,6 +88,7 @@ def get_panaroma_image(base_img, target_img):
 
 			if (org_data and wrapped_data):
 				final_img[i,j,:] = 0.5*warpped_base_img[i,j,:] + 0.5*warpped_target_img[i,j,:]
+				ROI_img[i,j] = 255
 
 			else:
 				if (org_data):
@@ -92,6 +98,7 @@ def get_panaroma_image(base_img, target_img):
 
 					if (wrapped_data):
 						final_img[i,j,:] = warpped_target_img[i,j,:]
+						ROI_img[i,j] = 255
 
 
 	final_mask = np.zeros((3*h, 3*w), np.uint8)
@@ -112,9 +119,11 @@ def get_panaroma_image(base_img, target_img):
 	x,y,w,h = cv2.boundingRect(contours[max_index])
 
 	crop_img = final_img[y:y+h, x:x+w, :]
+	crop_ROI = ROI_img[y:y+h, x:x+w]
 
 
-	return base_img, target_img, crop_img
+
+	return base_img, target_img, crop_img, crop_ROI
 
 
 
