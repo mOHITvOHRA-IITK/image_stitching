@@ -1,5 +1,11 @@
 **INTRODUCTION**
-This repository has some codes for stiching multiple images to form a panoramic view of the scenes. To use this repo, capture some images from the mobile and store the images in folder /sample_images/set{number} with the image extension .jpg only. The sequence of image is very important and it should start with 1.jpg, 2.jpg and so on. The final panoramic view 'final_img.jpg' will be saved in the folder /sample_images/set{number}. 
+This repository has some codes for stiching multiple images to form a panoramic view of the scenes. 
+
+<p align="center">
+  <img src="/sample_images/set1/final_img.jpg" />
+</p>
+
+To use this repo, capture some images from the mobile and store the images in folder /sample_images/set{number} with the image extension .jpg only. The sequence of image is very important and it should start with 1.jpg, 2.jpg and so on. The final panoramic view 'final_img.jpg' will be saved in the folder /sample_images/set{number}. 
 
 
 
