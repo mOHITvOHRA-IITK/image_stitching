@@ -1,3 +1,5 @@
+# Image Stitching
+
 **INTRODUCTION**
 This repository has some codes for stiching multiple images to form a panoramic view of the scenes. 
 
