@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import os
-
+from os import path
 
 
 
@@ -129,15 +129,25 @@ def get_panaroma_image(base_img, target_img, crop_ROI):
 
 
 
-def resize_images(base_dir, scale):
+def resize_images(base_dir, scale, save_image):
 
 	images_list = os.listdir(base_dir)
 
+	resize_images_list = []
+
 	for i in range(1, 1+len(images_list)):
-		base_img = cv2.imread(base_dir + str(i) + '.jpg')
-		h,w = base_img.shape[0:2]
-		base_img = cv2.resize(base_img, (np.int(w/scale), np.int(h/scale)) )
-		cv2.imwrite(base_dir + str(i) + '.jpg', base_img)
+
+		if (path.exists(base_dir + str(i) + '.jpg')):
+			base_img = cv2.imread(base_dir + str(i) + '.jpg')
+			h,w = base_img.shape[0:2]
+			base_img = cv2.resize(base_img, (np.int(w/scale), np.int(h/scale)) )
+			if save_image:
+				cv2.imwrite(base_dir + str(i) + '_resized.jpg', base_img)
+			resize_images_list.append(base_img)
+
+
+
+	return resize_images_list
 
 
 

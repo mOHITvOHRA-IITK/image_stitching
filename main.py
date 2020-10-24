@@ -9,6 +9,7 @@ from termcolor import colored
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', '--set_num', help='Set number for the source images', type=int, default=1)
 parser.add_argument('-r', '--image_scale', help='Scale down the image size', type=int, default=1)
+parser.add_argument('-w', '--save_resized_image', help='save_resized_image', type=bool, default=False)
 args = parser.parse_args()
 
 
@@ -20,10 +21,10 @@ images_list = os.listdir(base_dir)
 
 
 
-resize_images(base_dir, scale=args.image_scale)
+resize_images_list = resize_images(base_dir, args.image_scale, args.save_resized_image)
 
 
-if len(images_list) < 2:
+if len(resize_images_list) < 2:
 	print (colored('##################################', 'cyan'))
 	print (colored('##################################', 'cyan'))
 	print(colored('minimum two images are required', 'red'))
@@ -33,16 +34,16 @@ if len(images_list) < 2:
 
 
 
-i = 1
-img1 = cv2.imread(base_dir + str(i) + '.jpg')
-img2 = cv2.imread(base_dir + str(i+1) + '.jpg')
+
+img1 = resize_images_list[0]
+img2 = resize_images_list[1]
 _, _, final_img, crop_ROI = get_panaroma_image(img1, img2, None)
 
 
 
-for i in range(3, 1+len(images_list)):
+for i in range(2, len(resize_images_list)):
 
-	img2 = cv2.imread(base_dir + str(i) + '.jpg')
+	img2 = resize_images_list[i]
 	_, _, final_img, crop_ROI = get_panaroma_image(final_img, img2, None)
 
 

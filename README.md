@@ -17,7 +17,7 @@ To use this repo, capture some images from the mobile and store the images in fo
 3. In terminal type `cd /path/to/the/repository` and `python main.py -s 3 -r 1`.
 4. To reduce the size of the image, set `-r` to higher values. 
 For example  `python main.py -s 3 -r 2` means taking images from foder `</sample_images/set3>` and each image is resized to `(h/2, w/2)`.
-
+5. To save the resized images in the same folder use the additional argument `-w true` with the command `python main.py`.
 
 
 
