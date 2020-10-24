@@ -73,32 +73,24 @@ def get_panaroma_image(base_img, target_img, crop_ROI):
 	final_img = 0*warpped_target_img
 	ROI_img = np.zeros(shape = final_img.shape[0:2], dtype=np.uint8)
 
-	for i in range(3*h):
-		for j in range(3*w):
+	
 
-			org_data = 0
-			wrapped_data = 0
-
-			if ( warpped_base_img[i,j,0] > 0 or warpped_base_img[i,j,1] > 0 or warpped_base_img[i,j,2] > 0):
-				org_data = 1
-
-			if ( warpped_target_img[i,j,0] > 0 or warpped_target_img[i,j,1] > 0 or warpped_target_img[i,j,2] > 0):
-				wrapped_data = 1
+	final_img_base = 0*ROI_img
+	final_img_base[(warpped_base_img[:,:,0]/255.0 + warpped_base_img[:,:,1]/255.0 + warpped_base_img[:,:,2]/255.0) > 0] = 1
 
 
-			if (org_data and wrapped_data):
-				final_img[i,j,:] = 0.5*warpped_base_img[i,j,:] + 0.5*warpped_target_img[i,j,:]
-				ROI_img[i,j] = 255
+	final_img_target = 0*ROI_img
+	final_img_target[(warpped_target_img[:,:,0]/255.0 + warpped_target_img[:,:,1]/255.0 + warpped_target_img[:,:,2]/255.0) > 0] = 2
+	ROI_img[warpped_target_img[:,:,0] + warpped_target_img[:,:,1] + warpped_target_img[:,:,2] > 0] = 255
 
-			else:
-				if (org_data):
-					final_img[i,j,:] = warpped_base_img[i,j,:]
 
-				else:
+	final_img_combined = final_img_base + final_img_target
 
-					if (wrapped_data):
-						final_img[i,j,:] = warpped_target_img[i,j,:]
-						ROI_img[i,j] = 255
+
+	final_img [final_img_combined == 1] = warpped_base_img[final_img_combined == 1]
+	final_img [final_img_combined == 2] = warpped_target_img[final_img_combined == 2]
+	final_img [final_img_combined == 3] = 0.5*np.array(warpped_base_img[final_img_combined == 3]) + 0.5*np.array(warpped_target_img[final_img_combined == 3])
+
 
 
 	final_mask = np.zeros((3*h, 3*w), np.uint8)
