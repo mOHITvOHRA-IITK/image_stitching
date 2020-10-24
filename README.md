@@ -23,6 +23,6 @@ For example  `python main.py -s 3 -r 2` means taking images from foder `</sample
 
 
 **TO DO**
-1. Remove the unwanted image distortion.
+1. Distortion increase with the number of images for creating the panoramic view.
 
 

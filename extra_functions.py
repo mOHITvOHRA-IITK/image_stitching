@@ -70,26 +70,42 @@ def get_panaroma_image(base_img, target_img, crop_ROI):
 	warpped_base_img = cv2.warpPerspective(base_img, H2, (3*w, 3*h))
 
 
+
+
+
 	final_img = 0*warpped_target_img
 	ROI_img = np.zeros(shape = final_img.shape[0:2], dtype=np.uint8)
 
 	
-
+	kernel = np.ones((5,5),np.uint8)
+	
 	final_img_base = 0*ROI_img
 	final_img_base[(warpped_base_img[:,:,0]/255.0 + warpped_base_img[:,:,1]/255.0 + warpped_base_img[:,:,2]/255.0) > 0] = 1
+	_, final_img_base = cv2.threshold(final_img_base,0,1,cv2.THRESH_BINARY)
+	final_img_base = cv2.erode(final_img_base,kernel,iterations = 1)
 
 
 	final_img_target = 0*ROI_img
-	final_img_target[(warpped_target_img[:,:,0]/255.0 + warpped_target_img[:,:,1]/255.0 + warpped_target_img[:,:,2]/255.0) > 0] = 2
-	ROI_img[warpped_target_img[:,:,0] + warpped_target_img[:,:,1] + warpped_target_img[:,:,2] > 0] = 255
+	final_img_target[(warpped_target_img[:,:,0]/255.0 + warpped_target_img[:,:,1]/255.0 + warpped_target_img[:,:,2]/255.0) > 0] = 1
+	ROI_img[(warpped_target_img[:,:,0]/255.0 + warpped_target_img[:,:,1]/255.0 + warpped_target_img[:,:,2]/255.0) > 0] = 255
+	_, final_img_target = cv2.threshold(final_img_target,0,2,cv2.THRESH_BINARY)
+	final_img_target = cv2.erode(final_img_target,kernel,iterations = 1)
+
 
 
 	final_img_combined = final_img_base + final_img_target
+	_, final_img_combined = cv2.threshold(final_img_combined,2,255,cv2.THRESH_BINARY)
+	final_img_combined = cv2.erode(final_img_combined,kernel,iterations = 1)
+	
+	
 
 
-	final_img [final_img_combined == 1] = warpped_base_img[final_img_combined == 1]
-	final_img [final_img_combined == 2] = warpped_target_img[final_img_combined == 2]
-	final_img [final_img_combined == 3] = 0.5*np.array(warpped_base_img[final_img_combined == 3]) + 0.5*np.array(warpped_target_img[final_img_combined == 3])
+	final_img [(final_img_base > 0) & (final_img_combined == 0)] = warpped_base_img[(final_img_base > 0) & (final_img_combined == 0)]
+	final_img [(final_img_target > 0) & (final_img_combined == 0)] = warpped_target_img[(final_img_target > 0) & (final_img_combined == 0)]
+	final_img [final_img_combined > 0] = 0.5*np.array(warpped_base_img[final_img_combined > 0]) + 0.5*np.array(warpped_target_img[final_img_combined > 0])
+
+
+
 
 
 
@@ -112,8 +128,6 @@ def get_panaroma_image(base_img, target_img, crop_ROI):
 
 	crop_img = final_img[y:y+h, x:x+w, :]
 	crop_ROI = ROI_img[y:y+h, x:x+w]
-
-
 
 	return base_img, target_img, crop_img, crop_ROI
 
